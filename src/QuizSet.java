@@ -33,12 +33,10 @@ public class QuizSet implements java.io.Serializable {
         this.fileName = n;
     }
 
-    // gets the number of questions in the set
     public int getQNum() {
         return qSet.size();
     }
 
-    // returns the formatted version of the created date
     public String getCreatedDate() {
         return this.createdDate;
     }
@@ -56,6 +54,11 @@ public class QuizSet implements java.io.Serializable {
     }
 
     public void saveQuestion(Question qIn) {
+        for(int i=0; i<qSet.size(); i++) {
+            if(qIn.getQuesText().equals(qSet.get(i).getQuesText())) {
+                qSet.set(i, qIn);
+            }
+        }
     }
 
     public void remQuestion(int qIndex) {
@@ -71,8 +74,23 @@ public class QuizSet implements java.io.Serializable {
     }
 
     public void addGrade(float g) {
+        allGrades.add(g);
+        this.lastGrade = g;
     }
 
     public float getAveGrade() {
+        float aveGrade = 0;
+
+        if(allGrades.size() > 0 ) {
+            for(int i=0; i<this.allGrades.size(); i++) {
+                aveGrade += allGrades.get(i);
+            }
+
+            aveGrade /= allGrades.size();
+
+            return aveGrade;
+        }
+
+        return 0;
     }
 }

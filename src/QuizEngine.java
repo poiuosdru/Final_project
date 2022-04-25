@@ -48,12 +48,12 @@ public class QuizEngine {
         return this.qSequence;
     }
 
-    // prints all of the questions, mostly for testing purposes
     public void displayQuiz() {
         for(int i=0; i<generatedQuizSet.size(); i++) {
             System.out.println(generatedQuizSet.get(i).getQuesText());
         }
     }
+
     public Question getQuestion(int qIndex) {
         return generatedQuizSet.get(qIndex);
     }
@@ -71,11 +71,77 @@ public class QuizEngine {
     }
 
     public void generateQuiz() {
+
+        generatedQuizSet = new ArrayList<Question>();
+
+        qSequence = getRandQuesSeq(questionSet.size());
+
+        for(int i=0; i<questionSet.size(); i++) {
+            generatedQuizSet.add(questionSet.get(qSequence.get(i)));
+        }
+
+        genQuizCurQuesNum = 0;
     }
 
     private ArrayList<Integer> getRandQuesSeq(int numOfQuestions) {
+        ArrayList<Integer> qSequence = new ArrayList<Integer>();
+
+        while(!(qSequence.size() >= numOfQuestions)){
+            if(qSequence.size() >= numOfQuestions) {
+                break;
+            }else{
+                int randNum = rand.nextInt((numOfQuestions));
+                if(!(qSequence.contains(randNum))) {
+                    qSequence.add(randNum);
+                }
+            }
+        }
+        return qSequence;
     }
 
     public float gradeQuiz(ArrayList<ArrayList<String>> allUserAnswersIn) {
+
+        float userScore = 0;
+
+        ArrayList<ArrayList<String>> allUserAnswers = allUserAnswersIn;
+
+        incorrectQuestionSet = new ArrayList<Question>();
+        incorrectUserAnswers = new ArrayList<ArrayList<String>>();
+
+        for(int i=0; i<generatedQuizSet.size(); i++) {
+
+            Question ques = generatedQuizSet.get(i);
+
+            int questionType = ques.getQType();
+
+            ArrayList<String> questionUserAnswer = allUserAnswers.get(i);
+
+            ArrayList<String> questionActualAnswers = generatedQuizSet.get(i).getAnswers();
+
+            ArrayList<String> incorrectAnswer = new ArrayList<String>();
+
+            for(String userAnswer : questionUserAnswer) {
+
+                userAnswer = userAnswer.replace("<html>", "");
+                userAnswer = userAnswer.replace("</html>", "");
+
+                if(questionActualAnswers.contains(userAnswer)) {
+                    userScore += ((float) 1 / (float) questionActualAnswers.size());
+                }else {
+                    incorrectQuestionSet.add(ques);
+                    incorrectAnswer.add(userAnswer);
+                }
+            }
+
+            if(incorrectAnswer.size() > 0) {
+                incorrectUserAnswers.add(incorrectAnswer);
+            }
+
+        }
+
+        userScore = (userScore / generatedQuizSet.size()) * 100;
+
+        return userScore;
+
     }
 }

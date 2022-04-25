@@ -1,18 +1,17 @@
+import java.io.File;
+
 public class Main {
     public static void main(String[] args) {
-        QuizResult quizResult = new QuizResult();
-        quizResult.display();
 
-        QuizPanel quizPanel = new QuizPanel();
-        quizPanel.display();
+        File file = new File("." + File.separator + "data");
+        if(!(file.exists())) {
+            file.mkdir();
+        }
 
-        EditPanel editPanel = new EditPanel();
-        editPanel.display();
+        QuizGui qGui = new QuizGui();
 
-        NewQuestionPanel newQuestionPanel = new NewQuestionPanel();
-        newQuestionPanel.display();
+        qGui.display();
 
-        MainPanel mainPanel = new MainPanel();
-        mainPanel.display();
+
     }
 }
